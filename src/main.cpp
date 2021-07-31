@@ -38,7 +38,15 @@ void loop()
 {
   uint16_t pedal = analogRead(vy);
 
-  if (pedal < 1868) //joystick hacia adelante
+  if (pedal > 1845 && pedal <1880) // joystick no se está moviendo
+  {
+    digitalWrite(m1a, LOW);
+    digitalWrite(m1b, LOW);
+    digitalWrite(m2a, LOW);
+    digitalWrite(m2b, LOW);
+  }
+
+  if (pedal < 1844) //joystick hacia adelante
   {
     digitalWrite(m1a, HIGH);
     digitalWrite(m1b, LOW);
@@ -48,7 +56,7 @@ void loop()
     velMot2 = map(pedal, 1868, 0, 0, 255);
   }
 
-  else if (pedal > 1880) //joystick hacia atrás
+  else if (pedal > 1890) //joystick hacia atrás
   {
     digitalWrite(m1a, LOW);
     digitalWrite(m1b, HIGH);
@@ -57,12 +65,12 @@ void loop()
     velMot1 = map(pedal, 1880, 4095, 0, 255);
     velMot2 = map(pedal, 1880, 4095, 0, 255);
   }
-  /*Serial.print("valor en x: ");
+  Serial.print("valor en x: ");
   Serial.print(analogRead(vx));
   Serial.print(" valor en y: ");
   Serial.print(pedal);
   Serial.print(" la señal de pwm tiene un valor de: ");
-  Serial.println(""); */
+  Serial.println(""); 
   /* 
   analogWrite(pwm1,velMot1);
   analogWrite(pwm2,velMot2);
