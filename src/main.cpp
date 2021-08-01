@@ -1,5 +1,6 @@
 #include <Arduino.h>
 #include <analogWrite.h>
+#include <ESP32_PWM.h>
 #define vx 15 //pines de joystick
 #define vy 2  //pedal
 #define m1a 27 //pines de control de motor
@@ -10,7 +11,8 @@
 #define pwm2 19
 uint16_t velMot1;
 uint16_t velMot2;
-
+PWM pulse1;
+PWM pulse2;
 void setup()
 {
   Serial.begin(9600);
@@ -26,6 +28,9 @@ void setup()
   pinMode(m2b, OUTPUT);
   pinMode(pwm1,OUTPUT);
   pinMode(pwm2,OUTPUT);
+
+  pulse1.setup(pwm1,1,250);
+  pulse2.setup(pwm2,2,250);
 }
 
 void loop()
@@ -60,8 +65,8 @@ void loop()
     velMot2 = map(pedal, 1890, 4095, 0, 255);
   }
   
-  analogWrite(pwm1,velMot1);
-  analogWrite(pwm2,velMot2);
+  pulse1.setDuty(velMot1);
+  pulse2.setDuty(velMot2);
   /*
   Serial.print("valor en x: ");
   Serial.print(analogRead(vx));
