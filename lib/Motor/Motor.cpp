@@ -1,13 +1,15 @@
 #include "Motor.h"
+volatile bool brakeFlag = LOW; //bandera de freno
 
-#define vx 15  //pines de joystick
-#define vy 2   //pedal
-#define m1a 27 //pines de control de motor
-#define m1b 26
-#define m2a 12
-#define m2b 14
-#define pwm1 18 //pines de PWM
-#define pwm2 19
+void IRAM_ATTR stop()
+{
+  brakeFlag = HIGH;
+}
+void Motor::enableBrake()
+{
+  pinMode(freno, INPUT);
+  attachInterrupt(freno, stop, RISING);
+}
 
 Motor::Motor()
 {
@@ -37,7 +39,7 @@ void Motor::initializeMotors()
 
 void Motor::throttleMotor()
 {
-  uint16_t pedal = analogRead(vy);
+  pedal = analogRead(vy);
 
   if (pedal > 1845 && pedal < 1880) // joystick no se está moviendo
   {
@@ -69,4 +71,12 @@ void Motor::throttleMotor()
 
   pulse1.setDuty(velMot1);
   pulse2.setDuty(velMot2);
+}
+
+void Motor::brake()
+{
+  digitalWrite(m1a, LOW);
+  digitalWrite(m1b, LOW);
+  digitalWrite(m2a, LOW);
+  digitalWrite(m2b, LOW);
 }
