@@ -1,14 +1,32 @@
 #include "Motor.h"
 volatile bool brakeFlag = LOW; //bandera de freno
 
-void IRAM_ATTR stop()
+void stop()
 {
   brakeFlag = HIGH;
 }
+
+void resume()
+{
+  brakeFlag = LOW;
+}
+void IRAM_ATTR checkBrake()
+{
+  if (digitalRead(4) == HIGH)
+  {
+    stop();
+  }
+  else
+  {
+    resume();
+  }
+}
+
 void Motor::enableBrake()
 {
   pinMode(freno, INPUT);
-  attachInterrupt(freno, stop, RISING);
+  attachInterrupt(freno, checkBrake, CHANGE);
+  //attachInterrupt(freno, resume, FALLING);
 }
 
 Motor::Motor()
@@ -75,8 +93,16 @@ void Motor::throttleMotor()
 
 void Motor::brake()
 {
-  digitalWrite(m1a, LOW);
-  digitalWrite(m1b, LOW);
-  digitalWrite(m2a, LOW);
-  digitalWrite(m2b, LOW);
+
+  if (brakeFlag == HIGH)
+  {
+
+    digitalWrite(m1a, LOW);
+    digitalWrite(m1b, LOW);
+    digitalWrite(m2a, LOW);
+    digitalWrite(m2b, LOW);
+    //brakeFlag = LOW;
+  }
+
+  Serial.println(brakeFlag);
 }

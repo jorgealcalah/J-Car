@@ -10,12 +10,5 @@ void setup()
 void loop()
 {
   engine.throttleMotor();
-  /*
-  if (brakeFlag == HIGH)
-  {
-    brakeFlag = LOW;
-    engine.brake();
-  }
-  Serial.println(brakeFlag);
-  */
+  engine.brake();
 }
