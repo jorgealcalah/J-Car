@@ -10,6 +10,7 @@
 #define pwm2 19
 #define freno 4               //freno
 #define testpin 33
+
 class Motor
 {
 public:
@@ -18,8 +19,6 @@ public:
     uint16_t pedal;
     uint16_t velMot1;
     uint16_t velMot2;
-    uint8_t lecFreno;
-
     PWM pulse1;
     PWM pulse2;
     void stop();

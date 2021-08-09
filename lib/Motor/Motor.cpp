@@ -1,4 +1,6 @@
 #include "Motor.h"
+//debounce button with polling:
+//https://www.programmingelectronics.com/debouncing-a-button-with-arduino/
 volatile bool brakeFlag = LOW; //bandera de freno
 
 void stop()
@@ -10,9 +12,9 @@ void resume()
 {
   brakeFlag = LOW;
 }
-void IRAM_ATTR checkBrake()
+void IRAM_ATTR checkBrake() //check if button is pressed. https://forum.arduino.cc/t/rising-and-falling-interrupt-on-same-pin/144341/5
 {
-  if (digitalRead(4) == HIGH)
+  if (digitalRead(freno) == HIGH)
   {
     stop();
   }
@@ -24,9 +26,8 @@ void IRAM_ATTR checkBrake()
 
 void Motor::enableBrake()
 {
-  pinMode(freno, INPUT);
-  attachInterrupt(freno, checkBrake, CHANGE);
-  //attachInterrupt(freno, resume, FALLING);
+  pinMode(freno, INPUT); //https://microcontrollerslab.com/push-button-esp32-gpio-digital-input/
+  attachInterrupt(freno, checkBrake, CHANGE); //se usan resistencias pull-down. https://programarfacil.com/blog/utilizar-pulsadores-en-arduino/
 }
 
 Motor::Motor()
@@ -93,7 +94,6 @@ void Motor::throttleMotor()
 
 void Motor::brake()
 {
-
   if (brakeFlag == HIGH)
   {
 
@@ -101,8 +101,6 @@ void Motor::brake()
     digitalWrite(m1b, LOW);
     digitalWrite(m2a, LOW);
     digitalWrite(m2b, LOW);
-    //brakeFlag = LOW;
   }
-
   Serial.println(brakeFlag);
 }
