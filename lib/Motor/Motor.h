@@ -9,8 +9,7 @@
 #define m2b 14
 #define pwm1 18 //pines de PWM
 #define pwm2 19
-#define freno 4               //freno
-#define testpin 33
+#define freno 4 //freno
 
 class Motor
 {
@@ -22,6 +21,7 @@ public:
     uint16_t velMot2;
     PWM pulse1;
     PWM pulse2;
+    Lights light;
     void stop();
     void resume();
     void initializeMotors();

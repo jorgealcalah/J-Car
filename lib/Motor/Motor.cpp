@@ -2,6 +2,7 @@
 //debounce button with polling:
 //https://www.programmingelectronics.com/debouncing-a-button-with-arduino/
 volatile bool brakeFlag = LOW; //bandera de freno
+volatile bool turnFlag = LOW;  //bandera de luces intermitentes
 
 void stop()
 {
@@ -23,11 +24,25 @@ void IRAM_ATTR checkBrake() //check if button is pressed. https://forum.arduino.
     resume();
   }
 }
-
+/*
+void IRAM_ATTR toggleIntermitents()
+{
+  if (digitalRead(botonDirec) == HIGH)
+  {
+    turnFlag == HIGH;
+  }
+  else
+  {
+    turnFlag == LOW;
+  }
+}
+*/
 void Motor::enableBrake()
 {
-  pinMode(freno, INPUT); //https://microcontrollerslab.com/push-button-esp32-gpio-digital-input/
+  pinMode(freno, INPUT);                      //https://microcontrollerslab.com/push-button-esp32-gpio-digital-input/
   attachInterrupt(freno, checkBrake, CHANGE); //se usan resistencias pull-down. https://programarfacil.com/blog/utilizar-pulsadores-en-arduino/
+  //pinMode(botonDirec, INPUT);
+  //attachInterrupt(botonDirec, toggleIntermitents, RISING);
 }
 
 Motor::Motor()
@@ -42,7 +57,7 @@ void Motor::initializeMotors()
 {
 
   //pines de joystick
-  pinMode(vx, INPUT);
+  pinMode(vx, INPUT); //CORREGIR, ESTE SERÁ EL PIN DE LUZ DE REVERSA
   pinMode(vy, INPUT);
 
   //pines de control de motor
@@ -54,12 +69,13 @@ void Motor::initializeMotors()
   pinMode(pwm2, OUTPUT);
   pulse1.setup(pwm1, 1, 250);
   pulse2.setup(pwm2, 2, 250);
+  light.ConfigureLights();
 }
 
 void Motor::throttleMotor()
 {
   pedal = analogRead(vy);
-
+  light.ActivateFrontLights();
   if (pedal > 1845 && pedal < 1880) // joystick no se está moviendo
   {
     digitalWrite(m1a, LOW);
@@ -78,7 +94,7 @@ void Motor::throttleMotor()
     velMot2 = map(pedal, 1844, 0, 0, 255);
   }
 
-  else if (pedal > 1890) //joystick hacia atrás
+  else if (pedal > 1890) //joystick hacia atrás (reversa)
   {
     digitalWrite(m1a, LOW);
     digitalWrite(m1b, HIGH);
@@ -86,21 +102,34 @@ void Motor::throttleMotor()
     digitalWrite(m2b, LOW);
     velMot1 = map(pedal, 1890, 4095, 0, 255);
     velMot2 = map(pedal, 1890, 4095, 0, 255);
+    //light.ActivateReverseLights();
+
   }
 
   pulse1.setDuty(velMot1);
   pulse2.setDuty(velMot2);
+
+  if(turnFlag == HIGH){
+    light.Intermitents();
+  }
+  else{
+    digitalWrite(LuzDir,LOW);
+  }
 }
 
 void Motor::brake()
 {
   if (brakeFlag == HIGH)
   {
-
     digitalWrite(m1a, LOW);
     digitalWrite(m1b, LOW);
     digitalWrite(m2a, LOW);
     digitalWrite(m2b, LOW);
+    light.ActivateBacklights();
+  }
+  else
+  {
+    digitalWrite(LuzTras, LOW);
   }
   Serial.println(brakeFlag);
 }
