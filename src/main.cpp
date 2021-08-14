@@ -16,7 +16,7 @@ void loop()
 
 
 
-/* CODIGO A PASAR A LIGHTS.H
+/* CODIGO de luz intermitente
 #include <Arduino.h>
 #define ledpin 25
 #define button 22
