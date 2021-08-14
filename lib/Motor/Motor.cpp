@@ -24,19 +24,7 @@ void IRAM_ATTR checkBrake() //check if button is pressed. https://forum.arduino.
     resume();
   }
 }
-/*
-void IRAM_ATTR toggleIntermitents()
-{
-  if (digitalRead(botonDirec) == HIGH)
-  {
-    turnFlag == HIGH;
-  }
-  else
-  {
-    turnFlag == LOW;
-  }
-}
-*/
+
 void Motor::enableBrake()
 {
   pinMode(freno, INPUT);                      //https://microcontrollerslab.com/push-button-esp32-gpio-digital-input/
@@ -57,7 +45,7 @@ void Motor::initializeMotors()
 {
 
   //pines de joystick
-  pinMode(vx, INPUT); //CORREGIR, ESTE SERÁ EL PIN DE LUZ DE REVERSA
+  pinMode(vx, INPUT);
   pinMode(vy, INPUT);
 
   //pines de control de motor
@@ -76,6 +64,7 @@ void Motor::throttleMotor()
 {
   pedal = analogRead(vy);
   light.ActivateFrontLights();
+  light.checkCentralButton();
   if (pedal > 1845 && pedal < 1880) // joystick no se está moviendo
   {
     digitalWrite(m1a, LOW);
@@ -108,13 +97,6 @@ void Motor::throttleMotor()
 
   pulse1.setDuty(velMot1);
   pulse2.setDuty(velMot2);
-
-  if(turnFlag == HIGH){
-    light.Intermitents();
-  }
-  else{
-    digitalWrite(LuzDir,LOW);
-  }
 }
 
 void Motor::brake()

@@ -2,8 +2,8 @@
 #define LuzDel 32 //pines de salida (LEDs)
 #define LuzTras 33
 #define LuzDir 25
-#define LuzRev 23 //CORREGIR!! ESTE PIN ES LA LECTURA DEL EJE X DE JOYSTICK
-#define botonDirec 35 //pines de entrada (botones)
+#define LuzRev 23
+#define botonDirec 22 //pines de entrada (botones)
 class Lights
 {
 public:
@@ -15,7 +15,7 @@ public:
     void ActivateReverseLights();
     void LeftBlinker();
     void RightBlinker();
-    void Intermitents();
+    void checkCentralButton();
     void DisableLights();
 
 private:
