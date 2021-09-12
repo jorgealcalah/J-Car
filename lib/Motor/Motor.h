@@ -1,13 +1,12 @@
 #include <ESP32_PWM.h>
 #include <Arduino.h>
 #include <Lights.h>
-#define vx 15  //pines de joystick
-#define vy 2   //pedal
+#define pinpedal 2   //pedal
 #define m1a 27 //pines de control de motor
 #define m1b 26
-#define m2a 12
-#define m2b 14
-#define pwm1 18 //pines de PWM
+#define m2a 12 //CAMBIAR
+#define m2b 14 //CAMBIAR
+#define pwm1 18 //pines de PWM CAMBIAR
 #define pwm2 19
 #define freno 4 //freno
 

@@ -1,6 +1,8 @@
 #include "Lights.h"
 #define debounceTime 10
 volatile bool intermitentFlag = LOW;
+unsigned long previousTime = 0;
+bool lightState = LOW;
 
 Lights::Lights()
 {
@@ -65,7 +67,20 @@ void Lights::checkCentralButton()
 {
   if (intermitentFlag == HIGH)
   {
-    Intermitents();
+    unsigned long currentTime = millis();
+    if (currentTime - previousTime >= delayTimeLight)
+    {
+      previousTime = currentTime;
+      if (lightState == LOW)
+      {
+        lightState = HIGH;
+      }
+      else
+      {
+        lightState = LOW;
+      }
+      digitalWrite(LuzDir, lightState);
+    }
   }
   else
   {

@@ -29,8 +29,6 @@ void Motor::enableBrake()
 {
   pinMode(freno, INPUT);                      //https://microcontrollerslab.com/push-button-esp32-gpio-digital-input/
   attachInterrupt(freno, checkBrake, CHANGE); //se usan resistencias pull-down. https://programarfacil.com/blog/utilizar-pulsadores-en-arduino/
-  //pinMode(botonDirec, INPUT);
-  //attachInterrupt(botonDirec, toggleIntermitents, RISING);
 }
 
 Motor::Motor()
@@ -45,8 +43,7 @@ void Motor::initializeMotors()
 {
 
   //pines de joystick
-  pinMode(vx, INPUT);
-  pinMode(vy, INPUT);
+  pinMode(pinpedal, INPUT);
 
   //pines de control de motor
   pinMode(m1a, OUTPUT);
@@ -62,7 +59,7 @@ void Motor::initializeMotors()
 
 void Motor::throttleMotor()
 {
-  pedal = analogRead(vy);
+  pedal = analogRead(pinpedal);
   light.ActivateFrontLights();
   light.checkCentralButton();
   if (pedal > 1845 && pedal < 1880) // joystick no se está moviendo
@@ -91,12 +88,19 @@ void Motor::throttleMotor()
     digitalWrite(m2b, LOW);
     velMot1 = map(pedal, 1890, 4095, 0, 255);
     velMot2 = map(pedal, 1890, 4095, 0, 255);
-    //light.ActivateReverseLights();
-
   }
-
-  pulse1.setDuty(velMot1);
+  
+  pulse1.setDuty(velMot1); //setear velocidad del motor conforme al joystick
   pulse2.setDuty(velMot2);
+
+  if (pedal > 1890) //rutina de prender luces de reversa
+  {
+    light.ActivateReverseLights();
+  }
+  else
+  {
+    digitalWrite(LuzRev, LOW);
+  }
 }
 
 void Motor::brake()
@@ -110,8 +114,11 @@ void Motor::brake()
     light.ActivateBacklights();
   }
   else
+  
   {
+    
     digitalWrite(LuzTras, LOW);
+    
   }
-  Serial.println(brakeFlag);
+  
 }
