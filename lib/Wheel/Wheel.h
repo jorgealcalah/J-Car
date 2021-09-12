@@ -1,7 +1,7 @@
 #include <Arduino.h>
 #include <ESP32Servo.h>
 #define wheel 39
-#define pinservo 34
+#define pinservo 35
 class Wheel
 {
 public:
