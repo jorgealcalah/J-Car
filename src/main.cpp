@@ -26,29 +26,44 @@ void loop()
 #define BuzzerReverse 43
 #define echo 23
 #define trig 45
+#define delayPulse 10 //CAMBIAR - tiempo para sensor ultrasónico
+unsigned long tiempoAnterior = 0;
+bool ultrasonicState = LOW;
 
 void setup()
 {
-  pinMode(BuzzerReverse,OUTPUT);
-  pinMode(echo,INPUT);
-  pinMode(trig,OUTPUT);
+  pinMode(BuzzerReverse, OUTPUT);
+  pinMode(echo, INPUT);
+  pinMode(trig, OUTPUT);
 }
 
 void loop()
 {
-  digitalWrite(trig, HIGH);     // generacion del pulso a enviar
-  delay(1);       // al pin conectado al trigger
-  digitalWrite(trig, LOW);    // del sensor
-  
-  uint16_t DURACION = pulseIn(echo, HIGH);  // con funcion pulseIn se espera un pulso
-            // alto en Echo
-  uint16_t DISTANCIA = DURACION / 58.2;    // distancia medida en centimetros
-  Serial.println(DISTANCIA);    // envio de valor de distancia por monitor serial
-  delay(200);       // demora entre datos
-
-  if (DISTANCIA <= 40 && DISTANCIA >= 0){ // si distancia entre 0 y 20 cms.
-    tone(BuzzerReverse, 262); //un cuarto de la nota C4.      // enciende LED
-    delay(DISTANCIA * 10);      // demora proporcional a la distancia
-    digitalWrite(BuzzerReverse, LOW);     // apaga LED
+  unsigned long tiempoActual = micros();
+  if (tiempoActual - tiempoAnterior >= delayPulse)
+  {
+    tiempoAnterior = tiempoActual;
+    if (ultrasonicState == LOW)
+    {
+      ultrasonicState = HIGH;
     }
+    else
+    {
+      ultrasonicState = LOW;
+    }
+    digitalWrite(trig, ultrasonicState);
+  }
+
+  uint16_t DURACION = pulseIn(echo, HIGH); // con funcion pulseIn se espera un pulso
+                                           // alto en Echo
+  uint16_t DISTANCIA = DURACION / 58.2;    // distancia medida en centimetros
+
+  if (DISTANCIA <= 40 && DISTANCIA >= 0)
+  {                           // si distancia entre 0 y 20 cms.
+    tone(BuzzerReverse, 262); //un cuarto de la nota C4.
+  }
+  else
+  {
+    noTone(BuzzerReverse);
+  }
 }
