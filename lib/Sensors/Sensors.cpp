@@ -7,3 +7,11 @@ Sensors::Sensors()
 Sensors::~Sensors()
 {
 }
+
+void Sensors::configSensors()
+{
+}
+
+void Sensors::initSensors()
+{
+}
